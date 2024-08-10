@@ -1,8 +1,10 @@
 import express from "express";
+import swaggerUi from "swagger-ui-express";
 import dotenv from "dotenv";
 import nnnRouter from "nnn-router";
-import logger from "./middlewares/logger.js";
 import bodyParser from "body-parser";
+import logger from "./middlewares/logger.js";
+import swaggerDoc from "./swagger.json" assert { type: "json" };
 
 dotenv.config();
 const app = express();
@@ -10,6 +12,8 @@ const app = express();
 app.use(logger);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDoc));
 
 app.use(
   nnnRouter({

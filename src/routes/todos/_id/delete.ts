@@ -1,17 +1,20 @@
 import { Request, Response } from "express";
-import { todos } from "../../../data.js";
+import { deleteTodo, findTodoById } from "./../../../helpers/todo.js";
+import { validateId } from "./../../../middlewares/todo.js";
 
-export default function (req: Request, res: Response) {
+function handler(req: Request, res: Response) {
   const todoId = +req.params.id;
-  const todoIndex = todos.findIndex(({ id }) => id === todoId);
+  const existingTodo = findTodoById(todoId);
 
-  if (todoIndex < 0) {
+  if (!existingTodo) {
     res.status(404).send({
       message: "Not found",
     });
   }
 
-  todos.splice(todoIndex, 1);
+  deleteTodo(todoId);
 
   return res.status(200).send();
 }
+
+export default [validateId, handler];

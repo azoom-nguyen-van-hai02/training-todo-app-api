@@ -1,18 +1,21 @@
 import { Request, Response } from "express";
-import { TODO_STATUS } from "../../constants.js";
-import { Todo, todos } from "../../data.js";
+import { Todo, QueryTodoSchema } from "./../../schemas/todo.js";
+import { todos } from "../../data.js";
 
 export default function (req: Request, res: Response) {
-  const type = req.query.type;
-  const validQuery =
-    type === undefined ||
-    (type !== "" && Object.values(TODO_STATUS).includes(+type));
+  const validateResult = QueryTodoSchema.safeParse(req.query);
 
-  if (!validQuery) {
-    return res.status(400).send();
+  if (!validateResult.success) {
+    const errors = validateResult.error.errors.map((err) => ({
+      path: err.path[0],
+      message: err.message,
+    }));
+
+    return res.status(400).send({ errors });
   }
 
   let returnTodos = [];
+  const { status: type } = validateResult.data;
 
   if (type !== undefined) {
     const todoStatus = Number(type);

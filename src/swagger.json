@@ -1,0 +1,350 @@
+{
+    "openapi": "3.0.3",
+    "info": {
+      "title": "Swagger Todo App - OpenAPI 3.0",
+      "description": "This is a API docs of todo application \\\nAuthor: Hai (Mink)",
+      "contact": {
+        "email": "nguyen.van.hai02@azoom.jp"
+      },
+      "version": "1.0.0"
+    },
+    "servers": [
+      {
+        "url": "http://localhost:3000"
+      }
+    ],
+    "tags": [
+      {
+        "name": "Todo",
+        "description": "Access to todos"
+      }
+    ],
+    "paths": {
+      "/todos": {
+        "post": {
+          "tags": [
+            "Todo"
+          ],
+          "summary": "Add a new todo to the store",
+          "description": "Add a new todo to the store",
+          "operationId": "addTodo",
+          "requestBody": {
+            "description": "Create a new todo in the store",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Todo"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/Todo"
+                }
+              },
+              "application/x-www-form-urlencoded": {
+                "schema": {
+                  "$ref": "#/components/schemas/Todo"
+                }
+              }
+            },
+            "required": true
+          },
+          "responses": {
+            "200": {
+              "description": "Successful operation",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ExistingTodo"
+                  }
+                },
+                "application/xml": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ExistingTodo"
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Invalid input"
+            },
+            "422": {
+              "description": "Validation exception"
+            }
+          }
+        },
+        "get": {
+          "tags": [
+            "Todo"
+          ],
+          "summary": "Finds Todos by status",
+          "description": "Finds Todos by status, if status not provided, find all status",
+          "operationId": "findTodosByStatus",
+          "parameters": [
+            {
+              "name": "status",
+              "in": "query",
+              "description": "Status values that need to be considered for filter",
+              "required": false,
+              "explode": true,
+              "schema": {
+                "type": "string",
+                "enum": [
+                  0,
+                  1
+                ]
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "successful operation",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/Todo"
+                    }
+                  }
+                },
+                "application/xml": {
+                  "schema": {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/components/schemas/Todo"
+                    }
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Invalid status value"
+            }
+          }
+        }
+      },
+      "/todos/{todoId}": {
+        "get": {
+          "tags": [
+            "Todo"
+          ],
+          "summary": "Find todo by ID",
+          "description": "Returns a single todo",
+          "operationId": "getTodoById",
+          "parameters": [
+            {
+              "name": "todoId",
+              "in": "path",
+              "description": "ID of todo to return",
+              "required": true,
+              "schema": {
+                "type": "integer",
+                "format": "int64"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "successful operation",
+              "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Todo"
+                  }
+                },
+                "application/xml": {
+                  "schema": {
+                    "$ref": "#/components/schemas/Todo"
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Invalid ID supplied"
+            },
+            "404": {
+              "description": "Todo not found"
+            }
+          }
+        },
+        "put": {
+          "tags": [
+            "Todo"
+          ],
+          "summary": "Updates a todo in the store with form data",
+          "description": "",
+          "operationId": "updateTodoWithForm",
+          "parameters": [
+            {
+              "name": "todoId",
+              "in": "path",
+              "description": "ID of todo that needs to be updated",
+              "required": true,
+              "schema": {
+                "type": "integer",
+                "format": "int64"
+              }
+            }
+          ],
+          "requestBody": {
+            "description": "Create a new todo in the store",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Todo"
+                }
+              },
+              "application/xml": {
+                "schema": {
+                  "$ref": "#/components/schemas/Todo"
+                }
+              },
+              "application/x-www-form-urlencoded": {
+                "schema": {
+                  "$ref": "#/components/schemas/Todo"
+                }
+              }
+            },
+            "required": true
+          },
+          "responses": {
+            "200":{
+                "description": "Created successfully",
+                "content": {
+                "application/json": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ExistingTodo"
+                  }
+                },
+                "application/xml": {
+                  "schema": {
+                    "$ref": "#/components/schemas/ExistingTodo"
+                  }
+                }
+              }
+            },
+            "400": {
+              "description": "Invalid input"
+            }
+          }
+        },
+        "delete": {
+          "tags": [
+            "Todo"
+          ],
+          "summary": "Deletes a todo",
+          "description": "delete a todo",
+          "operationId": "deleteTodo",
+          "parameters": [
+            {
+              "name": "todoId",
+              "in": "path",
+              "description": "Todo id to delete",
+              "required": true,
+              "schema": {
+                "type": "integer",
+                "format": "int64"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Delete sucessfully"
+            },
+            "400": {
+              "description": "Invalid todo value"
+            }
+          }
+        }
+      }
+    },
+    "components": {
+      "schemas": {
+        "Todo": {
+          "required": [
+            "description",
+            "status"
+          ],
+          "type": "object",
+          "properties": {
+            "description": {
+              "type": "string",
+              "example": "Todo do something"
+            },
+            "status": {
+              "type": "integer",
+              "description": "todo status are done, todo (not done), in [0, 1]",
+              "enum": [
+                0,
+                1
+              ]
+            }
+          },
+          "xml": {
+            "name": "todo"
+          }
+        },
+        "ExistingTodo": {
+            
+          "required": [
+            "description",
+            "status"
+          ],
+          "type": "object",
+          "properties": {
+            "id":{
+                "type": "integer",
+                "format": "int64",
+                "example": 10
+            },
+            "description": {
+              "type": "string",
+              "example": "Todo do something"
+            },
+            "status": {
+              "type": "integer",
+              "description": "todo status are done, todo (not done), in [0, 1]",
+              "enum": [
+                0,
+                1
+              ]
+            }
+          },
+          "xml": {
+            "name": "todo"
+          }
+        }
+      },
+      "requestBodies": {
+        "Todo": {
+          "description": "Todo object that needs to be added to the store",
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Todo"
+              }
+            },
+            "application/xml": {
+              "schema": {
+                "$ref": "#/components/schemas/Todo"
+              }
+            }
+          }
+        },
+        "TodoArray": {
+          "description": "List of todo object",
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "array",
+                "items": {
+                  "$ref": "#/components/schemas/Todo"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }

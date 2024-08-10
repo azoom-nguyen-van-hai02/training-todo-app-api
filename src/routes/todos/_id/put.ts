@@ -1,25 +1,26 @@
 import { Request, Response } from "express";
-import { validateTodo } from "../post.js";
-import { Todo, todos } from "../../../data.js";
+import { updateTodo, findTodoById } from "./../../../helpers/todo.js";
+import {
+  validateId,
+  validateTodoPayload,
+} from "./../../../middlewares/todo.js";
+import { Todo } from "./../../../schemas/todo.js";
 
-export default function (req: Request, res: Response) {
-  const isValidBody = validateTodo(req.body);
+function handler(req: Request, res: Response) {
+  const { description, status } = req.body as Todo;
+  const id = +req.params.id;
 
-  if (!isValidBody) {
-    res.status(400).send({
-      message: "Invalid body",
-    });
-  }
-  const { description, status, id } = req.body as Todo;
-  const todoIndex = todos.findIndex((todo) => todo.id === id);
-
-  if (todoIndex < 0) {
+  const existingTodo = findTodoById(id);
+  if (!existingTodo) {
     res.status(404).send({
       message: "Not found",
     });
   }
 
-  todos[todoIndex] = { ...todos[todoIndex], description, status };
+  updateTodo(id, { description, status });
+  const todo = findTodoById(id);
 
-  return res.status(200).send();
+  return res.status(200).send(todo);
 }
+
+export default [validateId, validateTodoPayload, handler];
